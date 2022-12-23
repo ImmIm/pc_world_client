@@ -5,6 +5,21 @@ import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
+import UserProfile from './components/UserProfile/UserProfile';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [{ path: 'profile', element: <UserProfile /> }],
+  },
+]);
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -12,7 +27,7 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 );
