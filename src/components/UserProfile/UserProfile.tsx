@@ -1,22 +1,29 @@
-import { Card, CardContent, CardMedia, Grid, Paper, Typography } from '@mui/material';
-import { Box, Container } from '@mui/system';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  Paper,
+  Typography,
+} from '@mui/material';
+
+import { useAppSelector } from '../../app/hooks';
 
 function UserProfile() {
-  const userInfo = useSelector((state) => state.auth);
+  const userInfo = useAppSelector((state) => state.auth.currentUser);
+  const userPicture = useAppSelector((state) => state.auth.userPicture);
 
   return (
     <Grid container spacing={3} maxWidth={'80%'} sx={{ margin: '0 auto' }}>
-      <Grid item xs={12} sx={{padding: '0'}}>
-      <Paper elevation={2} >
-        <Typography
-          variant='body2'
-          color='text.primary'
-          component={'h2'}
-          sx={{ fontSize: 'large' }}>
-          User profile
-        </Typography>
+      <Grid item xs={12} sx={{ padding: '0' }}>
+        <Paper elevation={2}>
+          <Typography
+            variant='body2'
+            color='text.primary'
+            component={'h2'}
+            sx={{ fontSize: 'large' }}>
+            User profile
+          </Typography>
         </Paper>
       </Grid>
       <Grid item xs={6} md={6}>
@@ -26,11 +33,13 @@ function UserProfile() {
               variant='body2'
               color='text.primary'
               sx={{ fontSize: 'large' }}>
-              {userInfo.currentUser}
+                {/* 
+                //@ts-ignore */}
+              {userInfo.first_name}
             </Typography>
             <CardMedia
               component='img'
-              image={userInfo.userPicture}
+              src={userPicture}
               alt='Profile picture'
             />
           </CardContent>

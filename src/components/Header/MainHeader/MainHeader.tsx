@@ -17,11 +17,11 @@ import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
 import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { authActions, uiActions } from '../../../app/store';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Divider, ListItemIcon } from '@mui/material';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-
+import { UserInfo } from '../../../types/types';
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -33,7 +33,8 @@ function MainHeader() {
 
   const dispatch = useAppDispatch();
   const logined = useAppSelector((state) => state.auth.isLogined);
-
+  const userInfo: UserInfo = useAppSelector((state) => state.auth.currentUser);
+  const userPicture = useAppSelector((state) => state.auth.userPicture);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -52,20 +53,20 @@ function MainHeader() {
 
   const loginHandler = () => {
     handleCloseUserMenu();
-    dispatch(uiActions.toggleLoginBackdrop());   
+    dispatch(uiActions.toggleLoginModal());
   };
+
+  const signUpHandler = () => {
+    handleCloseUserMenu();
+    dispatch(uiActions.toggleSignUpModal());
+  }
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
-    handleCloseUserMenu()
+    handleCloseUserMenu();
   };
 
-  const profile = {
-    image: ' dsfsd',
-  };
-
-  // eslint-disable-next-line no-sparse-arrays
-const settings = [
+  const settings: Array<React.ReactElement> = [
     <MenuItem key={'profile'}>
       <NavLink
         to={'/profile'}
@@ -77,7 +78,10 @@ const settings = [
           alignItems: 'center',
           gap: '7px',
         }}>
-        <Avatar src={profile.image} /> Profile
+        <Avatar src={userPicture} />
+        {/* 
+        //@ts-ignore*/}
+        {userInfo === null? <Typography>Profile</Typography> : <Typography>{userInfo.first_name}</Typography> }
       </NavLink>
     </MenuItem>,
     <Divider key={'divider'} />,
@@ -91,7 +95,6 @@ const settings = [
         Settings
       </Link>
     </MenuItem>,
-    ,
     <MenuItem onClick={logoutHandler} key={'logout'}>
       <ListItemIcon>
         <Logout fontSize='small' />
@@ -101,29 +104,34 @@ const settings = [
   ];
 
   return (
-    <AppBar position='sticky' sx={{backgroundColor: 'transparent', border: '0px', boxShadow: 'none'}}>
+    <AppBar
+      position='sticky'
+      sx={{ backgroundColor: 'transparent', border: '0px', boxShadow: 'none' }}>
       <Container maxWidth='xl' sx={{ backgroundColor: 'grey' }}>
         {/* Desctop */}
         <Toolbar disableGutters>
           <LaptopChromebookIcon
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
-          <NavLink to={'/'} end style={{textDecoration: 'none', color: 'inherit'}}>
-          <Typography
-            variant='h6'
-            noWrap
-            component='div'
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}>
-            PC World
-          </Typography>
+          <NavLink
+            to={'/'}
+            end
+            style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Typography
+              variant='h6'
+              noWrap
+              component='div'
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}>
+              PC World
+            </Typography>
           </NavLink>
           <Search sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <SearchIconWrapper>
@@ -205,13 +213,12 @@ const settings = [
             }}>
             PC World
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
           {logined ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title='Open settings'>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt='User' src={profile.image} />
+                  <Avatar alt='User' src={userPicture} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -229,14 +236,14 @@ const settings = [
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}>
-                 {settings.map((setting) => setting)}
+                {settings.map((setting) => setting)}
               </Menu>
             </Box>
           ) : (
-            <Box sx={{display: 'flex'}}>
+            <Box sx={{ display: 'flex' }}>
               <Button
                 sx={{ color: 'white', display: 'block' }}
-                onClick={loginHandler}>
+                onClick={signUpHandler}>
                 Sign up
               </Button>
 

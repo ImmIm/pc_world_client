@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 export default function AppBackdrop(props) {
   const dispatch = useAppDispatch();
   const handleClose = () => {
-    dispatch(uiActions.toggleLoginBackdrop())
+    dispatch(uiActions.toggleAuthBackdrop())
   };
-  const backdropStatus = useAppSelector((state) => state.ui.loginBackdrop);
+  const backdropStatus = useAppSelector((state) => state.ui.authBackdrop);
 
   return (
     <>
