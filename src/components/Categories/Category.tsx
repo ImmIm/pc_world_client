@@ -8,14 +8,15 @@ import CategoryFilters from './CategoryFilters';
 function Category() {
   const { categoryid } = useParams();
 
-  
+  const category = useAppSelector((state) =>
+    state.data.categories.find((el) => el.name === categoryid)
+  );
 
-  const category = useAppSelector((state) => state.data.categories);
 
-  console.log(category.find(el => el.name === categoryid));
+
 
   return (
-    <Container component={'main'} maxWidth={'xl'}>
+    <Container disableGutters component={'main'} maxWidth={'xl'} sx={{display:'grid', gridTemplateColumns: '1fr 4fr'}}>
       <CategoryFilters />
       <ProductsList />
     </Container>

@@ -25,7 +25,7 @@ function UserProfile() {
 
   
   return (
-    <Grid container spacing={3} maxWidth={'80%'} sx={{ margin: '0 auto' }}>
+    <Grid container spacing={3} maxWidth={'xl'} sx={{ margin: '0 auto' }}>
       <Grid item xs={12} sx={{ padding: '0' }}>
         <Paper elevation={2}>
           <Typography
