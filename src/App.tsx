@@ -45,7 +45,7 @@ function App() {
   }, [loginError]);
 
   return (
-    <div className='App' style={{height: '100vh', display: 'flex',  flexDirection: 'column', justifyContent: 'space-between'}}>
+    <div className='App' style={{height: '100vh', display: 'grid',gridTemplateRows: '2fr 8fr 2fr'}}>
       {ReactDOM.createPortal(
         <>{loginedBackdrop ? <Login /> : null}</>,
         document.getElementById('modal-root') as HTMLElement
@@ -58,7 +58,7 @@ function App() {
         <AppBackdrop></AppBackdrop>,
         document.getElementById('backdrop-root') as HTMLElement
       )}
-      <MainHeader />
+      <MainHeader/>
       <Outlet />
       <Footer />
     </div>

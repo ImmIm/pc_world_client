@@ -22,15 +22,19 @@ export const preloadedState = {
   },
   data: {
     categories: [
-      { name: 'CPU', category_picture: cpu_cat, description: '' },
-      { name: 'GPU', category_picture: gpu_cat, description: '' },
-      {
+      { id: 1, name: 'CPU', category_picture: cpu_cat, description: '' },
+      { id: 2, name: 'GPU', category_picture: gpu_cat, description: '' },
+      {id: 3, 
         name: 'Motherboards',
         category_picture: motherboard_cat,
         description: '',
       },
-      { name: 'Ram', category_picture: ram_cat, description: '' },
+      { id: 4, name: 'Ram', category_picture: ram_cat, description: '' },
     ],
+    filters: {
+      frequency: [1500, 2000, 2500, 3000, 3500],
+      cores: [1, 2, 3, 4, 5, 6],
+    }
   },
 };
 

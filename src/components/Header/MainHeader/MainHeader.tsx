@@ -23,6 +23,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { UserInfo } from '../../../types/types';
 import StatusBar from '../StatusBar/StatusBar';
+import CategoriesPicker from '../../Homepage/CategoriesPicker';
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -109,10 +110,11 @@ function MainHeader() {
     <AppBar
       position='sticky'
       sx={{ backgroundColor: 'transparent', border: '0px', boxShadow: 'none' }}>
-        <StatusBar />
-      <Container maxWidth='xl' sx={{ backgroundColor: 'grey' }}>
+        
+      <Container maxWidth='xl' disableGutters >
+      <StatusBar />
         {/* Desctop */}
-        <Toolbar disableGutters>
+        <Toolbar  sx={{ backgroundColor: 'grey'}}>
           <LaptopChromebookIcon
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
@@ -257,7 +259,18 @@ function MainHeader() {
             </Box>
           )}
         </Toolbar>
+        <Container  
+        disableGutters
+        maxWidth={'xl'}
+        sx={{
+        maxHeight: '100px',
+        border: '1px sold grey',
+        backgroundColor: 'silver'
+      }}>
+        <CategoriesPicker />
+        </Container>
       </Container>
+      
     </AppBar>
   );
 }
