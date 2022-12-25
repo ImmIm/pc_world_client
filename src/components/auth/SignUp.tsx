@@ -3,6 +3,8 @@ import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../app/hooks';
 import Typography from '@mui/material/Typography';
+import { SignUpUser } from '../../app/utils';
+import { uiActions } from '../../app/store';
 
 function SignUp() {
   const dispatch = useAppDispatch();
@@ -18,7 +20,7 @@ function SignUp() {
   const [errorRepeatPassword, setRepeatPasswordError] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       if (userFirstName.trim().length < 4) {
         setFirstNameError(true);
       } else {
@@ -30,8 +32,8 @@ function SignUp() {
       } else {
         setLastNameError(false);
       }
-
-      if (userEmail.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+      // @ts-ignore
+      if (userEmail.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) === null) {
         setEmailError(true);
       } else {
         setEmailError(false);
@@ -42,21 +44,35 @@ function SignUp() {
       } else {
         setPasswordError(false);
       }
+
+      if (userPassword !== userRepeatPassword) {
+        setRepeatPasswordError(true);
+      } else {
+        setRepeatPasswordError(false);
+      }
     }, 1000);
-    return clearTimeout(timer);
-  }, [userFirstName, userLastName, userEmail, userPassword]);
+    // return clearTimeout(timer);
+  }, [
+    userFirstName,
+    userLastName,
+    userEmail,
+    userPassword,
+    userRepeatPassword,
+  ]);
 
   const signUpHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
-    console.log({
-      user: {
+    dispatch(
+      SignUpUser({
         first_name: userFirstName,
         last_name: userLastName,
-        e_mail: userEmail,
+        email: userEmail,
         password: userPassword,
-      },
-    });
+      })
+    );
+
+    dispatch(uiActions.toggleSignUpModal());
   };
 
   return (
