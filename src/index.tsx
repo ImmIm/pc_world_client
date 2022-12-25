@@ -5,19 +5,20 @@ import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import UserProfile from './components/UserProfile/UserProfile';
+import Homepage from './components/Homepage/Homepage';
+import Category from './components/Categories/Category';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    children: [{ path: 'profile', element: <UserProfile /> }],
+    children: [
+      { path: 'profile', element: <UserProfile /> },
+      { path: '', element: <Homepage /> },
+      { path: 'category/:categoryid', element: <Category /> },
+    ],
   },
 ]);
 

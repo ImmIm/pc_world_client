@@ -22,6 +22,7 @@ import { Divider, ListItemIcon } from '@mui/material';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { UserInfo } from '../../../types/types';
+import StatusBar from '../StatusBar/StatusBar';
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -70,6 +71,7 @@ function MainHeader() {
     <MenuItem key={'profile'}>
       <NavLink
         to={'/profile'}
+        end
         style={{
           textAlign: 'center',
           textDecoration: 'none',
@@ -107,6 +109,7 @@ function MainHeader() {
     <AppBar
       position='sticky'
       sx={{ backgroundColor: 'transparent', border: '0px', boxShadow: 'none' }}>
+        <StatusBar />
       <Container maxWidth='xl' sx={{ backgroundColor: 'grey' }}>
         {/* Desctop */}
         <Toolbar disableGutters>
@@ -199,8 +202,7 @@ function MainHeader() {
           <Typography
             variant='h5'
             noWrap
-            component='a'
-            href=''
+            component='div'
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

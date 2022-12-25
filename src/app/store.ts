@@ -1,79 +1,10 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  createAsyncThunk,
-} from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { loginData } from '../types/types';
-
-const getImage: any = async (url: string) => {
-  try {
-    return await (
-      await axios.get(url, { withCredentials: true, responseType: 'blob' })
-    ).data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const loginUserAutomatic = createAsyncThunk(
-  'auth/loginUserAutomatic',
-  async function () {
-    const data: { user: any; image: any } = {
-      user: '',
-      image: '',
-    };
-    try {
-      data.user = await (
-        await axios.get('http://localhost:3001/api/v1/private/auth/login', {
-          withCredentials: true,
-        })
-      ).data.data[0];
-      data.image = URL.createObjectURL(
-        await getImage(`http://localhost:3001/static/img/${data.user.image}`)
-      );
-      return data;
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        return err.response?.data;
-      } else {
-        return null;
-      }
-    }
-  }
-);
-
-export const loginUser = createAsyncThunk(
-  'auth/loginUser',
-  async function (info: loginData) {
-    const data: { user: any; image: any } = {
-      user: '',
-      image: '',
-    };
-    try {
-      data.user = await (
-        await axios.post(
-          'http://localhost:3001/api/v1/private/auth/login',
-          { email: info.email, password: info.password },
-          { withCredentials: true }
-        )
-      ).data.data[0];
-      data.image = URL.createObjectURL(
-        await getImage(`http://localhost:3001/static/img/${data.user.image}`)
-      );
-      return data;
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.response !== undefined) {
-        return err.response.data;
-      } else {
-        return null;
-      }
-    }
-  }
-);
+import { loginUserAutomatic, loginUser, SignUpUser } from './utils';
+import cpu_cat from '../assets/cpu_category.png';
+import gpu_cat from '../assets/gpu_category.png';
+import motherboard_cat from '../assets/motherboard_category.png';
+import ram_cat from '../assets/ram_category.png';
 
 export const preloadedState = {
   auth: {
@@ -87,7 +18,19 @@ export const preloadedState = {
     theme: 'bright',
     authBackdrop: false,
     loginModal: false,
-    signUpModal: false
+    signUpModal: false,
+  },
+  data: {
+    categories: [
+      { name: 'CPU', category_picture: cpu_cat, description: '' },
+      { name: 'GPU', category_picture: gpu_cat, description: '' },
+      {
+        name: 'Motherboards',
+        category_picture: motherboard_cat,
+        description: '',
+      },
+      { name: 'Ram', category_picture: ram_cat, description: '' },
+    ],
   },
 };
 
@@ -112,6 +55,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(loginUserAutomatic.fulfilled, (state, action) => {
       state.status = 'fulfilled';
+
       if (action.payload === null) {
         state.isLogined = false;
       } else if (action.payload.status === 'fail') {
@@ -119,23 +63,23 @@ export const authSlice = createSlice({
       } else {
         state.currentUser = action.payload.user;
         state.userPicture = action.payload.image;
-        state.error = ''
+        state.error = '';
         state.isLogined = true;
       }
       return state;
     });
     builder.addCase(loginUserAutomatic.rejected, (state, action) => {
       state.status = 'rejected';
-      state.error = 'Something went wrong!'
+      state.error = 'Something went wrong!';
       state.currentUser = null;
-      state.isLogined = false
+      state.isLogined = false;
     });
 
     builder.addCase(loginUser.pending, (state, action) => {});
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.status = 'fulfilled';
       if (action.payload === null) {
-        state.error = 'Something went wrong!'
+        state.error = 'Something went wrong!';
         state.isLogined = false;
       } else if (action.payload.status === 'fail') {
         state.error = action.payload.message;
@@ -143,16 +87,40 @@ export const authSlice = createSlice({
       } else {
         state.currentUser = action.payload.user;
         state.userPicture = action.payload.image;
-        state.error = ''
+        state.error = '';
         state.isLogined = true;
       }
       return state;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.status = 'rejected';
-      state.error = 'Something went wrong!'
+      state.error = 'Something went wrong!';
       state.currentUser = null;
-      state.isLogined = false
+      state.isLogined = false;
+    });
+
+    builder.addCase(SignUpUser.pending, (state, action) => {});
+    builder.addCase(SignUpUser.fulfilled, (state, action) => {
+      state.status = 'fulfilled';
+      if (action.payload === null) {
+        state.error = 'Something went wrong!';
+        state.isLogined = false;
+      } else if (action.payload.status === 'fail') {
+        state.error = action.payload.message;
+        state.isLogined = false;
+      } else {
+        state.currentUser = action.payload.user;
+        state.userPicture = action.payload.image;
+        state.error = '';
+        state.isLogined = true;
+      }
+      return state;
+    });
+    builder.addCase(SignUpUser.rejected, (state, action) => {
+      state.status = 'rejected';
+      state.error = 'Something went wrong!';
+      state.currentUser = null;
+      state.isLogined = false;
     });
   },
 });
@@ -171,34 +139,40 @@ export const uiSlice = createSlice({
       state.theme = 'dark';
       return state;
     },
-    toggleAuthBackdrop(state){
+    toggleAuthBackdrop(state) {
       state.authBackdrop = false;
       state.loginModal = false;
       state.signUpModal = false;
-    }
-    ,
+    },
     toggleLoginModal(state) {
-
       if (state.loginModal) {
-        state.loginModal = false
-        state.authBackdrop = false
-      }else{
-        state.loginModal = true
-        state.authBackdrop = true
+        state.loginModal = false;
+        state.authBackdrop = false;
+      } else {
+        state.loginModal = true;
+        state.authBackdrop = true;
       }
-     
+
       return state;
     },
     toggleSignUpModal(state) {
       if (state.signUpModal) {
-        state.signUpModal = false
-        state.authBackdrop = false
-      }else{
-        state.signUpModal = true
-        state.authBackdrop = true
-      }  
+        state.signUpModal = false;
+        state.authBackdrop = false;
+      } else {
+        state.signUpModal = true;
+        state.authBackdrop = true;
+      }
       return state;
     },
+  },
+});
+
+export const dataSlice = createSlice({
+  name: 'data',
+  initialState: preloadedState.data,
+  reducers: {
+    loadCategories(state) {},
   },
 });
 
@@ -207,6 +181,7 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     ui: uiSlice.reducer,
+    data: dataSlice.reducer
   },
 });
 export const authActions = authSlice.actions;

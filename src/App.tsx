@@ -6,50 +6,51 @@ import { useAppSelector, useAppDispatch } from './app/hooks';
 import Login from './components/auth/Login';
 import AppBackdrop from './components/ui/AppBackdrop';
 import { Outlet } from 'react-router-dom';
-import { loginUser, loginUserAutomatic } from './app/store';
-import Swal from 'sweetalert2'
+import { loginUserAutomatic } from './app/utils';
+import Swal from 'sweetalert2';
 import SignUp from './components/auth/SignUp';
+import Footer from './components/Footer/Footer';
+
 function App() {
   const loginedBackdrop = useAppSelector((state) => state.ui.loginModal);
   const signUpBackdrop = useAppSelector((state) => state.ui.signUpModal);
-  const loginError = useAppSelector(state => state.auth.error)
+  const loginError = useAppSelector((state) => state.auth.error);
   const dispatch = useAppDispatch();
-  const isLoggined = useAppSelector(state => state.auth.isLogined)
+  const isLoggined = useAppSelector((state) => state.auth.isLogined);
+  
   useEffect(() => {
-      dispatch(loginUserAutomatic());
+    dispatch(loginUserAutomatic());
   }, [dispatch]);
 
   useEffect(() => {
-  if (isLoggined === true) {
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'You succesfuly logined',
-      showConfirmButton: false,
-      timer: 700
-    })
-  }
-},[isLoggined]);
+    if (isLoggined === true) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'You succesfuly logined',
+        showConfirmButton: false,
+        timer: 700,
+      });
+    }
+  }, [isLoggined]);
 
   useEffect(() => {
-    if(loginError !== ''){
+    if (loginError !== '') {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: loginError,
-      })
+      });
     }
   }, [loginError]);
 
-
-
   return (
-    <div className='App'>
+    <div className='App' style={{height: '100vh', display: 'flex',  flexDirection: 'column', justifyContent: 'space-between'}}>
       {ReactDOM.createPortal(
         <>{loginedBackdrop ? <Login /> : null}</>,
         document.getElementById('modal-root') as HTMLElement
       )}
-       {ReactDOM.createPortal(
+      {ReactDOM.createPortal(
         <>{signUpBackdrop ? <SignUp /> : null}</>,
         document.getElementById('modal-root') as HTMLElement
       )}
@@ -59,6 +60,7 @@ function App() {
       )}
       <MainHeader />
       <Outlet />
+      <Footer />
     </div>
   );
 }
