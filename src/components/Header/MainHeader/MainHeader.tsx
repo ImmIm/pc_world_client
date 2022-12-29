@@ -20,10 +20,12 @@ import { authActions, uiActions } from '../../../app/store';
 import { Link } from 'react-router-dom';
 import { Divider, ListItemIcon } from '@mui/material';
 import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+
 import { UserInfo } from '../../../types/types';
 import StatusBar from '../StatusBar/StatusBar';
 import CategoriesPicker from '../../Homepage/CategoriesPicker';
+import { LogoutUser } from '../../../app/utils';
+import Logout from '@mui/icons-material/Logout';
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -64,7 +66,7 @@ function MainHeader() {
   }
 
   const logoutHandler = () => {
-    dispatch(authActions.logout());
+    dispatch(LogoutUser());
     handleCloseUserMenu();
   };
 

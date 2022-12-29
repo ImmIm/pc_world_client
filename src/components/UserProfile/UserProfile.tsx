@@ -13,9 +13,10 @@ import { useAppSelector } from '../../app/hooks';
 function UserProfile() {
   const userInfo = useAppSelector((state) => state.auth.currentUser);
   const userPicture = useAppSelector((state) => state.auth.userPicture);
-  const navigate = useNavigate()
 
   if (userInfo === null) {
+
+    redirect('/')
     return (
       <div>
         Error

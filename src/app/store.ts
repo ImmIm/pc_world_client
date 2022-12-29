@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUserAutomatic, loginUser, SignUpUser } from './utils';
+import { loginUserAutomatic, loginUser, SignUpUser, LogoutUser} from './utils';
 import cpu_cat from '../assets/cpu_category.png';
 import gpu_cat from '../assets/gpu_category.png';
 import motherboard_cat from '../assets/motherboard_category.png';
@@ -126,6 +126,15 @@ export const authSlice = createSlice({
       state.currentUser = null;
       state.isLogined = false;
     });
+
+    builder.addCase(LogoutUser.fulfilled, (state, action) => {
+      state.currentUser = null;
+      state.isLogined = false;
+      state.userPicture = '';
+      state.error = ''
+      state.status = ''
+      return state
+    })
   },
 });
 
