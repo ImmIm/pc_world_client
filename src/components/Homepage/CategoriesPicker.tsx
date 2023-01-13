@@ -1,10 +1,15 @@
+import { Skeleton } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { useAppSelector } from '../../app/hooks';
-import CategoryCard from './categoryCard';
+import CategoryList from './CategoryList';
 
 function CategoriesPicker() {
-  const category = useAppSelector((state) => state.data.categories);
+  const category = useAppSelector((state) => state.categories.categories);
+  const status = useAppSelector((state) => state.categories.status);
+
+  console.log(status);
+  
   return (
     <Box
       sx={{
@@ -15,13 +20,11 @@ function CategoriesPicker() {
         flexWrap: 'wrap',
         maxHeight: '100px',
         border: '1px sold grey',
-        gap:'20px',
+        gap: '20px',
         padding: '0',
-        margin: '0'
+        margin: '0',
       }}>
-      {category.map((el) => (
-        <CategoryCard key={el.name} title={el.name} img={el.category_picture} />
-      ))}
+      {status === 'pending' ? <Skeleton /> : <CategoryList category={category}/>}
     </Box>
   );
 }
