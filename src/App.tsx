@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from './app/hooks';
 import Login from './components/auth/Login';
 import AppBackdrop from './components/ui/AppBackdrop';
 import { Outlet } from 'react-router-dom';
-import { loginUserAutomatic } from './app/utils';
+import utils from './app/utils/utils';
 import Swal from 'sweetalert2';
 import SignUp from './components/auth/SignUp';
 import Footer from './components/Footer/Footer';
@@ -17,10 +17,14 @@ function App() {
   const loginError = useAppSelector((state) => state.auth.error);
   const dispatch = useAppDispatch();
   const isLoggined = useAppSelector((state) => state.auth.isLogined);
-  
+
   useEffect(() => {
-    dispatch(loginUserAutomatic());
-  }, [dispatch]);
+    dispatch(utils.categoryUtils.getCategories())
+  }, [])
+
+  useEffect(() => {
+    dispatch(utils.authUtils.loginUserAutomatic());
+  }, []);
 
   useEffect(() => {
     if (isLoggined === true) {
@@ -45,7 +49,13 @@ function App() {
   }, [loginError]);
 
   return (
-    <div className='App' style={{height: '100vh', display: 'grid',gridTemplateRows: '2fr 8fr 2fr'}}>
+    <div
+      className='App'
+      style={{
+        height: '100vh',
+        display: 'grid',
+        gridTemplateRows: '2fr 8fr 2fr',
+      }}>
       {ReactDOM.createPortal(
         <>{loginedBackdrop ? <Login /> : null}</>,
         document.getElementById('modal-root') as HTMLElement
@@ -58,7 +68,7 @@ function App() {
         <AppBackdrop></AppBackdrop>,
         document.getElementById('backdrop-root') as HTMLElement
       )}
-      <MainHeader/>
+      <MainHeader />
       <Outlet />
       <Footer />
     </div>

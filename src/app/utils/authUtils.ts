@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { loginData, signUpData } from '../types/types';
+import { loginData, signUpData } from '../../types/types';
 
-export const getImage: any = async (url: string) => {
+const getImage: any = async (url: string) => {
   try {
     return await (
       await axios.get(url, { withCredentials: true, responseType: 'blob' })
@@ -12,9 +12,10 @@ export const getImage: any = async (url: string) => {
   }
 };
 
-export const loginUserAutomatic = createAsyncThunk(
+const loginUserAutomatic = createAsyncThunk(
   'auth/loginUserAutomatic',
   async function () {
+
     const data: { user: any; image: any } = {
       user: '',
       image: '',
@@ -24,11 +25,12 @@ export const loginUserAutomatic = createAsyncThunk(
         await axios.get('http://localhost:3001/api/v1/private/auth/login', {
           withCredentials: true,
         })
-      ).data.data[0];
-
+      ).data.data;
       data.image = URL.createObjectURL(
         await getImage(`http://localhost:3001/static/img/${data.user.image}`)
       );
+     
+      
       return data;
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -40,7 +42,7 @@ export const loginUserAutomatic = createAsyncThunk(
   }
 );
 
-export const loginUser = createAsyncThunk(
+const loginUser = createAsyncThunk(
   'auth/loginUser',
   async function (info: loginData) {
     const data: { user: any; image: any } = {
@@ -54,7 +56,7 @@ export const loginUser = createAsyncThunk(
           { email: info.email, password: info.password },
           { withCredentials: true }
         )
-      ).data.data[0];
+      ).data.data;
 
       data.image = URL.createObjectURL(
         await getImage(`http://localhost:3001/static/img/${data.user.image}`)
@@ -70,7 +72,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const SignUpUser = createAsyncThunk(
+const SignUpUser = createAsyncThunk(
   'auth/signUp',
   async function (info: signUpData) {
     const data: { user: any; image: any } = {
@@ -107,15 +109,21 @@ export const SignUpUser = createAsyncThunk(
   }
 );
 
-export const LogoutUser = createAsyncThunk('auth/Logout', async function () {
-  const response = await (await axios.get('http://localhost:3001/api/v1/private/auth/logout', {
-    withCredentials: true,
-  })).data;
+const LogoutUser = createAsyncThunk('auth/Logout', async function () {
+  const response = await (
+    await axios.get('http://localhost:3001/api/v1/private/auth/logout', {
+      withCredentials: true,
+    })
+  ).data;
 
-  console.log(response);
-
-  return
-  
-
-
+  return response;
 });
+
+const authUtils = {
+  loginUserAutomatic,
+  loginUser,
+  SignUpUser,
+  LogoutUser,
+};
+
+export default authUtils;

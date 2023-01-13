@@ -28,3 +28,6 @@ export type signUpData = {
 export type CategoryProps = {
   category: { name: string; category_picture: string; description: string };
 };
+
+
+export type Category = { id: number, name: string; category_picture: string; description: string }

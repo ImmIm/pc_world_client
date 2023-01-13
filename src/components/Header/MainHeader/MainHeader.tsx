@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
 import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { authActions, uiActions } from '../../../app/store';
+import { uiActions } from '../../../app/store';
 import { Link } from 'react-router-dom';
 import { Divider, ListItemIcon } from '@mui/material';
 import Settings from '@mui/icons-material/Settings';
@@ -24,8 +24,9 @@ import Settings from '@mui/icons-material/Settings';
 import { UserInfo } from '../../../types/types';
 import StatusBar from '../StatusBar/StatusBar';
 import CategoriesPicker from '../../Homepage/CategoriesPicker';
-import { LogoutUser } from '../../../app/utils';
+import utils from '../../../app/utils/utils';
 import Logout from '@mui/icons-material/Logout';
+import { isUserInfo } from '../../../types/typeGuards';
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -39,6 +40,9 @@ function MainHeader() {
   const logined = useAppSelector((state) => state.auth.isLogined);
   const userInfo: UserInfo = useAppSelector((state) => state.auth.currentUser);
   const userPicture = useAppSelector((state) => state.auth.userPicture);
+
+  console.log(logined);
+  
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -63,10 +67,10 @@ function MainHeader() {
   const signUpHandler = () => {
     handleCloseUserMenu();
     dispatch(uiActions.toggleSignUpModal());
-  }
+  };
 
   const logoutHandler = () => {
-    dispatch(LogoutUser());
+    dispatch(utils.authUtils.LogoutUser());
     handleCloseUserMenu();
   };
 
@@ -86,7 +90,12 @@ function MainHeader() {
         <Avatar src={userPicture} />
         {/* 
         //@ts-ignore*/}
-        {userInfo === null? <Typography>Profile</Typography> : <Typography>{userInfo.first_name}</Typography> }
+        {( userInfo === null )? (
+          <Typography>Profile</Typography>
+        ) : (
+          // @ts-ignore
+          <Typography>{userInfo.first_name}</Typography>
+        )}
       </NavLink>
     </MenuItem>,
     <Divider key={'divider'} />,
@@ -112,11 +121,10 @@ function MainHeader() {
     <AppBar
       position='sticky'
       sx={{ backgroundColor: 'transparent', border: '0px', boxShadow: 'none' }}>
-        
-      <Container maxWidth='xl' disableGutters >
-      <StatusBar />
+      <Container maxWidth='xl' disableGutters>
+        <StatusBar />
         {/* Desctop */}
-        <Toolbar  sx={{ backgroundColor: 'grey'}}>
+        <Toolbar sx={{ backgroundColor: 'grey' }}>
           <LaptopChromebookIcon
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
@@ -261,18 +269,17 @@ function MainHeader() {
             </Box>
           )}
         </Toolbar>
-        <Container  
-        disableGutters
-        maxWidth={'xl'}
-        sx={{
-        maxHeight: '100px',
-        border: '1px sold grey',
-        backgroundColor: 'silver'
-      }}>
-        <CategoriesPicker />
+        <Container
+          disableGutters
+          maxWidth={'xl'}
+          sx={{
+            maxHeight: '100px',
+            border: '1px sold grey',
+            backgroundColor: 'silver',
+          }}>
+          <CategoriesPicker />
         </Container>
       </Container>
-      
     </AppBar>
   );
 }

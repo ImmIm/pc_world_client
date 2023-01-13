@@ -1,42 +1,8 @@
+import { preloadedState } from './preloadedState';
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUserAutomatic, loginUser, SignUpUser, LogoutUser} from './utils';
-import cpu_cat from '../assets/cpu_category.png';
-import gpu_cat from '../assets/gpu_category.png';
-import motherboard_cat from '../assets/motherboard_category.png';
-import ram_cat from '../assets/ram_category.png';
-
-export const preloadedState = {
-  auth: {
-    currentUser: null,
-    userPicture: '',
-    isLogined: false,
-    status: '',
-    error: '',
-  },
-  ui: {
-    theme: 'bright',
-    authBackdrop: false,
-    loginModal: false,
-    signUpModal: false,
-  },
-  data: {
-    categories: [
-      { id: 1, name: 'CPU', category_picture: cpu_cat, description: '' },
-      { id: 2, name: 'GPU', category_picture: gpu_cat, description: '' },
-      {id: 3, 
-        name: 'Motherboards',
-        category_picture: motherboard_cat,
-        description: '',
-      },
-      { id: 4, name: 'Ram', category_picture: ram_cat, description: '' },
-    ],
-    filters: {
-      frequency: [1500, 2000, 2500, 3000, 3500],
-      cores: [1, 2, 3, 4, 5, 6],
-    }
-  },
-};
+import { categoriesSlice } from './categoriesSlice';
+import utils from './utils/utils';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -54,33 +20,41 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUserAutomatic.pending, (state, action) => {
-      state.status = 'pending';
-    });
-    builder.addCase(loginUserAutomatic.fulfilled, (state, action) => {
-      state.status = 'fulfilled';
-
-      if (action.payload === null) {
-        state.isLogined = false;
-      } else if (action.payload.status === 'fail') {
-        state.isLogined = false;
-      } else {
-        state.currentUser = action.payload.user;
-        state.userPicture = action.payload.image;
-        state.error = '';
-        state.isLogined = true;
+    builder.addCase(
+      utils.authUtils.loginUserAutomatic.pending,
+      (state, action) => {
+        state.status = 'pending';
       }
-      return state;
-    });
-    builder.addCase(loginUserAutomatic.rejected, (state, action) => {
-      state.status = 'rejected';
-      state.error = 'Something went wrong!';
-      state.currentUser = null;
-      state.isLogined = false;
-    });
+    );
+    builder.addCase(
+      utils.authUtils.loginUserAutomatic.fulfilled,
+      (state, action) => {
+        state.status = 'fulfilled';
+        if (action.payload === null) {
+          state.isLogined = false;
+        } else if (action.payload.status === 'fail') {
+          state.isLogined = false;
+        } else {
+          state.currentUser = action.payload.user;
+          state.userPicture = action.payload.image;
+          state.error = '';
+          state.isLogined = true;
+        }
+        return state;
+      }
+    );
+    builder.addCase(
+      utils.authUtils.loginUserAutomatic.rejected,
+      (state, action) => {
+        state.status = 'rejected';
+        state.error = 'Something went wrong!';
+        state.currentUser = null;
+        state.isLogined = false;
+      }
+    );
 
-    builder.addCase(loginUser.pending, (state, action) => {});
-    builder.addCase(loginUser.fulfilled, (state, action) => {
+    builder.addCase(utils.authUtils.loginUser.pending, (state, action) => {});
+    builder.addCase(utils.authUtils.loginUser.fulfilled, (state, action) => {
       state.status = 'fulfilled';
       if (action.payload === null) {
         state.error = 'Something went wrong!';
@@ -96,15 +70,15 @@ export const authSlice = createSlice({
       }
       return state;
     });
-    builder.addCase(loginUser.rejected, (state, action) => {
+    builder.addCase(utils.authUtils.loginUser.rejected, (state, action) => {
       state.status = 'rejected';
       state.error = 'Something went wrong!';
       state.currentUser = null;
       state.isLogined = false;
     });
 
-    builder.addCase(SignUpUser.pending, (state, action) => {});
-    builder.addCase(SignUpUser.fulfilled, (state, action) => {
+    builder.addCase(utils.authUtils.SignUpUser.pending, (state, action) => {});
+    builder.addCase(utils.authUtils.SignUpUser.fulfilled, (state, action) => {
       state.status = 'fulfilled';
       if (action.payload === null) {
         state.error = 'Something went wrong!';
@@ -120,21 +94,21 @@ export const authSlice = createSlice({
       }
       return state;
     });
-    builder.addCase(SignUpUser.rejected, (state, action) => {
+    builder.addCase(utils.authUtils.SignUpUser.rejected, (state, action) => {
       state.status = 'rejected';
       state.error = 'Something went wrong!';
       state.currentUser = null;
       state.isLogined = false;
     });
 
-    builder.addCase(LogoutUser.fulfilled, (state, action) => {
+    builder.addCase(utils.authUtils.LogoutUser.fulfilled, (state, action) => {
       state.currentUser = null;
       state.isLogined = false;
       state.userPicture = '';
-      state.error = ''
-      state.status = ''
-      return state
-    })
+      state.error = '';
+      state.status = '';
+      return state;
+    });
   },
 });
 
@@ -194,7 +168,8 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     ui: uiSlice.reducer,
-    data: dataSlice.reducer
+    data: dataSlice.reducer,
+    categories: categoriesSlice.reducer,
   },
 });
 export const authActions = authSlice.actions;

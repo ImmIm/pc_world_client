@@ -3,7 +3,7 @@ import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../app/hooks';
 import Typography from '@mui/material/Typography';
-import { SignUpUser } from '../../app/utils';
+import utils from '../../app/utils/utils';
 import { uiActions } from '../../app/store';
 
 function SignUp() {
@@ -64,7 +64,7 @@ function SignUp() {
     e.preventDefault();
 
     dispatch(
-      SignUpUser({
+      utils.authUtils.SignUpUser({
         first_name: userFirstName,
         last_name: userLastName,
         email: userEmail,
