@@ -40,10 +40,6 @@ function MainHeader() {
   const logined = useAppSelector((state) => state.auth.isLogined);
   const userInfo: UserInfo = useAppSelector((state) => state.auth.currentUser);
   const userPicture = useAppSelector((state) => state.auth.userPicture);
-
-  console.log(logined);
-  
-
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };

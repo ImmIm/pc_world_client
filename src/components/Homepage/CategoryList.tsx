@@ -14,8 +14,6 @@ type Props = {
 
 function CategoryList(props: Props) {
 
-  console.log(props);
-  
   return (
     <>
       {props.category.map((el) => (

@@ -31,3 +31,8 @@ export type CategoryProps = {
 
 
 export type Category = { id: number, name: string; category_picture: string; description: string }
+
+export type Filter = {
+  option: string;
+  data: string[] | number[]
+}

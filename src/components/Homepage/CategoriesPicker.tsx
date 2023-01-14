@@ -8,8 +8,6 @@ function CategoriesPicker() {
   const category = useAppSelector((state) => state.categories.categories);
   const status = useAppSelector((state) => state.categories.status);
 
-  console.log(status);
-  
   return (
     <Box
       sx={{
