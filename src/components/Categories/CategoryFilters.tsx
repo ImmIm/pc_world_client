@@ -1,36 +1,58 @@
-import Checkbox from '@mui/material/Checkbox';
+import { Skeleton } from '@mui/material';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import FormLabel from '@mui/material/FormLabel';
-import { useAppSelector } from '../../app/hooks';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import utils from '../../app/utils/utils';
 
 function CategoryFilters() {
-  const filters = useAppSelector((state) => state.data.filters);
+  const dispatch = useAppDispatch();
+  const status = useAppSelector((state) => state.filters.status);
+  const options = useAppSelector((state) => state.filters.options);
+
+  useEffect(() => {
+    dispatch(utils.filtersUtils.getFilters('cpu'));
+  }, []);
+
+  console.log(options);
 
   return (
-    <Container component={'aside'} maxWidth={'xs'} sx={{border: '2px solid grey', height: '100%'}}>
-      <FormControl>
-        <FormLabel>Filters</FormLabel>
+    <Container
+      component={'aside'}
+      maxWidth={'xs'}
+      sx={{ border: '2px solid grey', height: '100%' }}>
+      {status === 'pending' ? <Skeleton sx={{width: '100%', height: '100%'}} /> : null}
 
-        <FormGroup>
-          {filters.frequency.map((el) => {
-            return (
-              <FormControlLabel key={el} control={<Checkbox />} label={`${el} MHz`} />
-            );
-          })}
-        </FormGroup>
-        <Divider />
-        <FormGroup>
-          {filters.cores.map((el) => {
-            return (
-              <FormControlLabel key={el} control={<Checkbox />} label={`${el} core`} />
-            );
-          })}
-        </FormGroup>
-      </FormControl>
+      {/* 
+      {(!isFilter(filters)) ? null : (
+        <FormControl>
+          <FormLabel>Filters</FormLabel>
+
+          <FormGroup>
+            {filters.frequency.map((el) => {
+              return (
+                <FormControlLabel
+                  key={el}
+                  control={<Checkbox />}
+                  label={`${el} MHz`}
+                />
+              );
+            })}
+          </FormGroup>
+          <Divider />
+          <FormGroup>
+            {filters.cores.map((el) => {
+              return (
+                <FormControlLabel
+                  key={el}
+                  control={<Checkbox />}
+                  label={`${el} core`}
+                />
+              );
+            })}
+          </FormGroup>
+        </FormControl>
+      )}
+       */}
     </Container>
   );
 }

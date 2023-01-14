@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { preloadedState } from './preloadedState';
-import utils from './utils/utils';
+import { preloadedState } from '../preloadedState';
+import utils from '../utils/utils';
 
 export const categoriesSlice = createSlice({
   name: 'category',
