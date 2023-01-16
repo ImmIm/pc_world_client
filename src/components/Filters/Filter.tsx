@@ -9,6 +9,8 @@ import {
 import React from 'react';
 
 function Filter(props: { data: { optionName: string; data: string[] } }) {
+  const minimal = Math.min(...props.data.data.map((el) => Number(el)));
+  const maximum = Math.max(...props.data.data.map((el) => Number(el)));
   return (
     <>
       <FormLabel>{props.data.optionName}</FormLabel>
@@ -21,20 +23,24 @@ function Filter(props: { data: { optionName: string; data: string[] } }) {
           })}
         </FormGroup>
       ) : (
-        <FormGroup>
-          <FormControlLabel
-            label={''}
-            control={
-              <Slider
-                aria-label={props.data.optionName}
-                valueLabelDisplay='auto'
-                marks
-                min={Math.min(...props.data.data.map((el) => Number(el)))}
-                max={Math.max(...props.data.data.map((el) => Number(el)))}
+        <>
+          {props.data.optionName === 'price' ? null : (
+            <FormGroup>
+              <FormControlLabel
+                label={''}
+                control={
+                  <Slider
+                    aria-label={props.data.optionName}
+                    valueLabelDisplay='auto'
+                    marks={[{value: minimal, label: `${minimal}`}, {value: maximum, label: `${maximum}`}]}
+                    min={minimal}
+                    max={maximum}
+                  />
+                }
               />
-            }
-          />
-        </FormGroup>
+            </FormGroup>
+          )}
+        </>
       )}
 
       <Divider />
