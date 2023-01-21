@@ -2,11 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 import { preloadedState } from '../preloadedState';
 import utils from '../utils/utils';
 
+
+
+
 export const filtersSlice = createSlice({
   name: 'filters',
   initialState: preloadedState.filters,
   reducers: {
-    loadCategories(state) {},
+    changeSelectedOptions(state, payload){
+      state.selectedOptions = payload.payload
+      return state
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(utils.filtersUtils.getFilters.pending, (state, action) => {
