@@ -21,6 +21,7 @@ export const preloadedState = {
       categories: []
     },
     filters: {
+      selectedOptions: {},
       status: '',
       error: '',
       options: []

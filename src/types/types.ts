@@ -36,3 +36,6 @@ export type Filter = {
   option: string;
   data: string[] | number[]
 }
+
+
+export type FilterOptions = {optionName: string, data: string[]}[]

@@ -2,6 +2,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Filter } from '../../types/types';
 
+
+
+
 const getImage: any = async (url: string) => {
   try {
     return await (
@@ -21,6 +24,9 @@ const getFilters = createAsyncThunk(
           `http://localhost:3001/api/v1/public/filters?category=${category}`
         )
       ).data.data;
+
+
+
 
       return result
     } catch (error) {
