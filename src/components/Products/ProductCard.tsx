@@ -1,54 +1,75 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Skeleton } from '@mui/material';
+import { Product } from '../../types/types';
+import dataUtils from '../../app/utils/dataUtils';
+import { useParams } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { useInView } from 'react-intersection-observer';
 
 const fieldsAliases = {
   frequency: 'Frequency',
   n_cores: 'Cores',
+  model: 'Model',
+  socket: 'Socket',
+  producer_info: 'Producer',
+  producer_country: 'Country',
 };
 
 export default function ProductCard(props: {
-  product: {
-    id: number;
-    product_name: string;
-    main_image: string;
-    frequency: string;
-    n_cores: number;
-    price: number
-  };
+  product: Product;
+  category: string;
 }) {
+  const [picture, setPicture] = useState('');
   let shortInfo = '';
   for (const [key, value] of Object.entries(props.product)) {
     if (
       key !== 'id' &&
       key !== 'product_name' &&
-      key !== 'main_image' &&
-      key !== 'price'
+      key !== 'main_picture' &&
+      key !== 'price' &&
+      key !== 'product_id' &&
+      key !== 'category_id'
     ) {
       // @ts-ignore
       shortInfo += `${fieldsAliases[key]}: ${value} `;
     }
   }
 
+  const [ref, inView, entry] = useInView({
+    triggerOnce: true,
+    rootMargin: '200px 0px',
+  });
+
+  useEffect(() => {
+    const getPicture = async () => {
+      if (inView) {
+        const pic = await dataUtils.getImage(
+          `http://localhost:3001/static/products/${props.category?.toLowerCase()}/${
+            props.product.main_picture
+          }`
+        );
+
+        const picUrl = URL.createObjectURL(pic);
+        setPicture(picUrl);
+      }
+    };
+
+    getPicture();
+  }, [inView]);
+
   return (
     <Card
+      ref={ref}
       sx={{
         width: '100%',
-        height: '20vh',
+        height: '15rem',
         display: 'grid',
         gridTemplateColumns: '3fr 6fr 3fr',
       }}>
@@ -58,15 +79,18 @@ export default function ProductCard(props: {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <img
-          src={props.product.main_image}
-          alt={props.product.product_name}
-          style={{
-            maxHeight: '15vh',
-            width: 'auto',
-            aspectRatio: '1/1',
-            objectFit: 'cover',
-          }}></img>
+        {picture === '' ? (
+          <CircularProgress />
+        ) : (
+          <img
+            src={picture}
+            alt={props.product.product_name}
+            style={{
+              maxHeight: '10rem',
+              width: 'auto',
+              objectFit: 'cover',
+            }}></img>
+        )}
       </Box>
 
       <CardContent
@@ -76,7 +100,7 @@ export default function ProductCard(props: {
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
         }}>
-        <Typography gutterBottom variant='h5' component='div' >
+        <Typography gutterBottom variant='h5' component='div'>
           {props.product.product_name}
         </Typography>
         <Typography variant='body2' color='text.secondary'>
@@ -88,11 +112,12 @@ export default function ProductCard(props: {
           {props.product.price} $
         </Typography>
         <CardActions>
-        <Button size='small'>Add to cart</Button>
-        <Button size='small'>Add to wishlist</Button>
-      </CardActions>
+          <Button size='small'>Add to cart</Button>
+          <IconButton aria-label='add to wishlist' color='primary'>
+            <BookmarkBorderIcon />
+          </IconButton>
+        </CardActions>
       </CardContent>
-      
     </Card>
   );
 }

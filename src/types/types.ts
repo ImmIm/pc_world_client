@@ -38,4 +38,33 @@ export type Filter = {
 }
 
 
+
+
+export type CpuProduct = {
+  product_id: number;
+  frequency: number;
+  n_cores: number;
+  model: string;
+  socket: string;
+}
+
+export type GpuProduct = {
+  product_id: number;
+  frequency: number;
+  chip_code_name: string;
+  gpu_name: string;
+  video_memory: string;
+  video_memory_type: string;
+}
+
+export type Product =  {
+  id: number;
+  product_name: string;
+  category_id: number;
+  price: number;
+  producer_country: string;
+  producer_info: string;
+  main_picture: string;
+} & (CpuProduct | GpuProduct)
+
 export type FilterOptions = {optionName: string, data: string[]}[]
