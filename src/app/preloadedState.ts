@@ -13,6 +13,12 @@ export const preloadedState = {
       signUpModal: false,
     },
     data: {
+      category: '',
+      status: '',
+      error: '',
+      products: [],
+      productCount: 0,
+      maxProducts: 10
       
     },
     categories: {

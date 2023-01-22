@@ -24,10 +24,6 @@ const getFilters = createAsyncThunk(
           `http://localhost:3001/api/v1/public/filters?category=${category}`
         )
       ).data.data;
-
-
-
-
       return result
     } catch (error) {
       if (axios.isAxiosError(error) && error.response !== undefined) {
