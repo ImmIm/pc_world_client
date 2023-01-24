@@ -9,6 +9,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import UserProfile from './components/UserProfile/UserProfile';
 import Homepage from './components/Homepage/Homepage';
 import Category from './components/Categories/Category';
+import ProductPage from './components/Products/ProductPage';
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
     children: [
       { path: 'profile', element: <UserProfile /> },
       { path: '', element: <Homepage /> },
-      { path: 'category/:categoryid', element: <Category /> },
+      { path: '/:categoryid', element: <Category />, children: [{path: '/:categoryid/product/:id', element: <ProductPage />}] },
     ],
   },
 ]);

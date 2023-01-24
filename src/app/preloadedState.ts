@@ -18,7 +18,8 @@ export const preloadedState = {
       error: '',
       products: [],
       productCount: 0,
-      maxProducts: 10
+      maxProducts: 10,
+      currentProduct: {}
       
     },
     categories: {

@@ -13,7 +13,7 @@ export default function CategoryCard(props: Props) {
   const navigate = useNavigate();
 
   const navHandler = () => {
-    navigate(`category/${props.title}`);
+    navigate(`/${props.title}`);
   };
   return (
     <Card

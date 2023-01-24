@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { Box, Button, Skeleton } from '@mui/material';
 import { Product } from '../../types/types';
 import dataUtils from '../../app/utils/dataUtils';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -41,6 +41,15 @@ export default function ProductCard(props: {
       shortInfo += `${fieldsAliases[key]}: ${value} `;
     }
   }
+
+  const navigate = useNavigate();
+
+  console.log(props.category);
+  
+
+  const navHandler = (id: number) => {
+    navigate(`product/${id}`);
+  };
 
   const [ref, inView, entry] = useInView({
     triggerOnce: true,
@@ -100,7 +109,7 @@ export default function ProductCard(props: {
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
         }}>
-        <Typography gutterBottom variant='h5' component='div'>
+        <Typography gutterBottom variant='h5' component='div' onClick={() => navHandler(props.product.id)}>
           {props.product.product_name}
         </Typography>
         <Typography variant='body2' color='text.secondary'>

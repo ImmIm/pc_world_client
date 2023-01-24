@@ -13,32 +13,32 @@ export const getImage: any = async (url: string) => {
   }
 };
 
-const getProductsByCategory = createAsyncThunk(
-  'data/getProductByCategory',
-  async function (data: { category: string; count: number }) {
-    if (data.count === undefined) {
-      data.count = 0;
-    }
-    try {
-      const result: Product[] = await (
-        await axios.get(
-          `http://localhost:3001/api/v1/public/products?category=${data.category}&count=${data.count}`
-        )
-      ).data.data;
+// const getProductsByCategory = createAsyncThunk(
+//   'data/getProductByCategory',
+//   async function (data: { category: string; count: number }) {
+//     if (data.count === undefined) {
+//       data.count = 0;
+//     }
+//     try {
+//       const result: Product[] = await (
+//         await axios.get(
+//           `http://localhost:3001/api/v1/public/products?category=${data.category}&count=${data.count}`
+//         )
+//       ).data.data;
 
-      return { category: data.category, data: result };
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response !== undefined) {
-        return error.response.data;
-      } else {
-        return null;
-      }
-    }
-  }
-);
+//       return { category: data.category, data: result };
+//     } catch (error) {
+//       if (axios.isAxiosError(error) && error.response !== undefined) {
+//         return error.response.data;
+//       } else {
+//         return null;
+//       }
+//     }
+//   }
+// );
 
 const getProductsByFilters = createAsyncThunk(
-  'data/getProductByCategory',
+  'data/getProductsByFilters',
   async function (data: { category: string; count: number; filters: {} }) {
 
     console.log('fetching ');
@@ -77,9 +77,6 @@ const getProductsByFilters = createAsyncThunk(
         )
       ).data.data;
 
-      console.log(result);
-      
-
       return { category: data.category, data: result };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response !== undefined) {
@@ -91,10 +88,25 @@ const getProductsByFilters = createAsyncThunk(
   }
 );
 
+
+const getFullProduct = createAsyncThunk( 'data/getFullProduct',
+async function (id: number) {
+  try {
+    return await (
+      await axios.get(`http://localhost:3001/api/v1/public/products/${id}`, { withCredentials: true})
+    ).data;
+  } catch (error) {
+    return error;
+  }
+})
+
+
+
 const dataUtils = {
-  getProductsByCategory,
+  // getProductsByCategory,
   getImage,
   getProductsByFilters,
+  getFullProduct
 };
 
 export default dataUtils;

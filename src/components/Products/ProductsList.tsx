@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/system';
 import dataUtils from '../../app/utils/dataUtils';
 import { dataActions, filtersActions } from '../../app/store';
+import { useNavigate } from 'react-router-dom';
 
 function ProductsList(props: { category: string }) {
   const [ref, inView, entry] = useInView({
@@ -23,7 +24,11 @@ function ProductsList(props: { category: string }) {
   const filtersStatus = useAppSelector((state) => state.filters.filtering);
   const errorStatus = useAppSelector((state) => state.data.error);
 
-  console.log(errorStatus);
+
+
+
+  console.log(maxProducts);
+  
 
   useEffect(() => {
     console.log('Use effect');
@@ -74,7 +79,7 @@ function ProductsList(props: { category: string }) {
         {status !== 'ok' && count === 0 ? (
           <>
             {errorStatus === 'Not found' ? (
-              <Typography>Soory, our search not found that</Typography>
+              <Typography sx={{margin: '20rem'}}>Soory, our search not found that</Typography>
             ) : (
               <Skeleton sx={{ height: '100%', width: '100%' }} />
             )}

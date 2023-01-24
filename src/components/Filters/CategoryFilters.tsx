@@ -29,8 +29,11 @@ function CategoryFilters(props: {
     initialValues: props.formInitialValues,
     enableReinitialize: true,
     onReset: (values, { setValues }) => {
-      dispatch(filtersActions.changeSelectedOptions(props.formInitialValues));
-      dispatch(filtersActions.stopFiltering());
+      if(JSON.stringify(props.formInitialValues) !== JSON.stringify(values)){
+        dispatch(filtersActions.changeSelectedOptions(props.formInitialValues));
+        dispatch(filtersActions.stopFiltering());
+        dispatch(dataActions.clearProducts());
+      }
     },
     onSubmit: (values) => {
       if (JSON.stringify(filters) !== JSON.stringify(values)) {

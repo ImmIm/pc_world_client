@@ -14,12 +14,12 @@ export const dataSlice = createSlice({
 
   },
   extraReducers: (builder) => {
-    builder.addCase(utils.filtersUtils.getFilters.pending, (state, action) => {
+    builder.addCase(utils.dataUtils.getProductsByFilters.pending, (state, action) => {
       state.status = 'pending';
       return state;
     });
     builder.addCase(
-      utils.dataUtils.getProductsByCategory.fulfilled,
+      utils.dataUtils.getProductsByFilters.fulfilled,
       (state, action) => {
         if (action.payload === null) {
           state.status = 'error';
@@ -29,7 +29,7 @@ export const dataSlice = createSlice({
           state.status = 'error';
         } else {
           if (action.payload.category === state.category) {
-            state.maxProducts = action.payload.data.length
+            state.maxProducts = action.payload.data.count
             state.category = action.payload.category
             state.productCount = state.productCount + action.payload.data.data.length;
             state.error = '';
@@ -37,7 +37,7 @@ export const dataSlice = createSlice({
             // @ts-ignore
             state.products = state.products.concat(action.payload.data.data);
           } else {
-            state.maxProducts = action.payload.data.length
+            state.maxProducts = action.payload.data.count
             state.category = action.payload.category
             state.productCount = action.payload.data.data.length;
             state.error = '';
@@ -49,12 +49,17 @@ export const dataSlice = createSlice({
       }
     );
     builder.addCase(
-      utils.dataUtils.getProductsByCategory.rejected,
+      utils.dataUtils.getProductsByFilters.rejected,
       (state, action) => {
         state.status = `Error: ${action.error}`;
         state.error = 'Something went wrong!';
         return state;
       }
     );
+    builder.addCase(utils.dataUtils.getFullProduct.fulfilled, (state, action) => {
+      state.currentProduct = action.payload
+    }
+      
+    )
   },
 });

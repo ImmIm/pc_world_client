@@ -2,7 +2,7 @@ import { Skeleton } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import filtersUtils from '../../app/utils/filtersUtils';
 import {
@@ -18,6 +18,8 @@ import filterFEUtils from '../utils/filterUtils';
 import dataUtils from '../../app/utils/dataUtils';
 
 function Category() {
+
+  const location = useLocation()
   const { categoryid } = useParams();
 
   const options: FilterOptions = useAppSelector(
@@ -29,6 +31,9 @@ function Category() {
   const sliderOptionsNames = filterFEUtils.getSliderOptionsNames(options);
 
   const filtersStatus = useAppSelector(state => state.filters.selectedOptions)
+
+  console.log(location);
+  
   
   useEffect(() => {
     // @ts-ignore
@@ -76,7 +81,8 @@ function Category() {
       )}
       {/* 
       // @ts-ignore */}
-      <ProductsList category={categoryid} />
+      {location.pathname.includes('product')? <Outlet /> : <ProductsList category={categoryid} /> }
+      
     </Container>
   );
 }
