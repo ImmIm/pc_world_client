@@ -6,7 +6,12 @@ export const dataSlice = createSlice({
   name: 'data',
   initialState: preloadedState.data,
   reducers: {
-    loadCategories(state) {},
+    clearProducts(state){
+      state.products = []
+      state.productCount = 0;
+      state.maxProducts = 0;
+    }
+
   },
   extraReducers: (builder) => {
     builder.addCase(utils.filtersUtils.getFilters.pending, (state, action) => {

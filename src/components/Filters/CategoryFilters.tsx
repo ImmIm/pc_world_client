@@ -1,5 +1,8 @@
 import { Box, Button, Typography, Divider } from '@mui/material';
 import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { dataActions, filtersActions } from '../../app/store';
 import { FilterOptions } from '../../types/types';
 import CheckboxGroup from '../FormInputs/CheckboxGroup';
 import PriceInput from '../FormInputs/PriceInput';
@@ -11,19 +14,53 @@ function CategoryFilters(props: {
   formInitialValues: {};
   options: FilterOptions;
 }) {
+  const dispatch = useAppDispatch();
   const sliderOptions = filterFEUtils.getSliderOptions(props.options);
   const checkboxOptions = filterFEUtils.getCheckboxOptions(props.options);
+  const filtersStatus = useAppSelector((state) => state.filters.filtering);
+  const filters = useAppSelector((state) => state.filters.selectedOptions);
+
+  useEffect(() => {
+    dispatch(filtersActions.changeSelectedOptions(props.formInitialValues));
+    dispatch(filtersActions.stopFiltering());
+  }, []);
 
   const formik = useFormik({
     initialValues: props.formInitialValues,
-    // validationSchema: validationSchema,
+    enableReinitialize: true,
+    onReset: (values, { setValues }) => {
+      dispatch(filtersActions.changeSelectedOptions(props.formInitialValues));
+      dispatch(filtersActions.stopFiltering());
+    },
     onSubmit: (values) => {
-      console.log(values);
+      if (JSON.stringify(filters) !== JSON.stringify(values)) {
+        dispatch(dataActions.clearProducts());
+      }
+      dispatch(
+        filtersActions.toggleFiltering(
+          JSON.stringify(filters) !== JSON.stringify(values)
+        )
+      );
+      dispatch(filtersActions.changeSelectedOptions(values));
+      // if (JSON.stringify(filters) !== JSON.stringify(values)) {
+      //   dispatch(filtersActions.isFiltering());
+      //   dispatch(filtersActions.changeSelectedOptions(values));
+      // } else {
+      //   dispatch(filtersActions.isFiltering());
+      //   dispatch(filtersActions.changeSelectedOptions(values));
+      // }
+
+      // else if(JSON.stringify(formik.initialValues) !== JSON.stringify(values)){
+      // dispatch(filtersActions.stopFiltering());
+      // }else{
+      //   dispatch(filtersActions.isFiltering());
+      //   dispatch(filtersActions.changeSelectedOptions(values));
+      // }
     },
   });
 
   return (
-    <Box component={'aside'} sx={{display: 'flex', flexDirection: 'column'}}>
+    <Box component={'aside'} sx={{ display: 'flex', flexDirection: 'column' }}>
       <form onSubmit={formik.handleSubmit}>
         <Typography>Price</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -41,14 +78,29 @@ function CategoryFilters(props: {
           />
         </Box>
         <Divider />
-        <SliderGroup options={sliderOptions} values={formik.values} formik={formik}/>
-        <CheckboxGroup options={checkboxOptions} values={formik.values} formik={formik}/>
+        <SliderGroup
+          options={sliderOptions}
+          values={formik.values}
+          formik={formik}
+        />
+        <CheckboxGroup
+          options={checkboxOptions}
+          values={formik.values}
+          formik={formik}
+        />
 
-
-
-        <Button color='primary' variant='contained' fullWidth type='submit'>
-          Submit
-        </Button>
+        <Box sx={{ display: 'flex' }}>
+          <Button color='primary' variant='contained' fullWidth type='submit'>
+            Submit
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            fullWidth
+            onClick={formik.handleReset}>
+            Reset filters
+          </Button>
+        </Box>
       </form>
     </Box>
   );

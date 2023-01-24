@@ -1,8 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { count } from 'console';
-import { Filter, Product } from '../../types/types';
-import categoryUtils from './categoryUtils';
+
+import { Product } from '../../types/types';
 
 export const getImage: any = async (url: string) => {
   try {
@@ -13,7 +12,6 @@ export const getImage: any = async (url: string) => {
     return error;
   }
 };
-
 
 const getProductsByCategory = createAsyncThunk(
   'data/getProductByCategory',
@@ -28,8 +26,61 @@ const getProductsByCategory = createAsyncThunk(
         )
       ).data.data;
 
+      return { category: data.category, data: result };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response !== undefined) {
+        return error.response.data;
+      } else {
+        return null;
+      }
+    }
+  }
+);
 
-      return {category: data.category, data: result };
+const getProductsByFilters = createAsyncThunk(
+  'data/getProductByCategory',
+  async function (data: { category: string; count: number; filters: {} }) {
+
+    console.log('fetching ');
+    
+
+    let additionalQuery = '';
+
+    for (const el in data.filters) {
+      // @ts-ignore
+      if (Array.isArray(data.filters[el])) {
+        // @ts-ignore
+        const ar: string[] = data.filters[el];
+        if (ar.length !== 0) {
+          additionalQuery += `&`
+          for (const opt of ar) {
+            additionalQuery += `${el}='${opt}'&`
+          }
+        }
+      } else {
+        // @ts-ignore
+        if (data.filters[el] !== '') {
+          //@ts-ignore
+          const num = Number(data.filters[el]);
+          additionalQuery += `&${el}=${num}`;
+        }
+      }
+    }
+
+    if (data.count === undefined) {
+      data.count = 0;
+    }
+    try {
+      const result: Product[] = await (
+        await axios.get(
+          `http://localhost:3001/api/v1/public/products?category=${data.category}&count=${data.count}${additionalQuery}`
+        )
+      ).data.data;
+
+      console.log(result);
+      
+
+      return { category: data.category, data: result };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response !== undefined) {
         return error.response.data;
@@ -43,6 +94,7 @@ const getProductsByCategory = createAsyncThunk(
 const dataUtils = {
   getProductsByCategory,
   getImage,
+  getProductsByFilters,
 };
 
 export default dataUtils;

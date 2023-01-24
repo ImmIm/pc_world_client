@@ -13,6 +13,17 @@ export const filtersSlice = createSlice({
       state.selectedOptions = payload.payload
       return state
     },
+    isFiltering(state){
+      state.filtering = true
+      return state
+    },
+    stopFiltering(state){
+      state.filtering = false
+      return state
+    },
+    toggleFiltering(state, action){
+      state.filtering = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(utils.filtersUtils.getFilters.pending, (state, action) => {

@@ -2,6 +2,8 @@ import React from 'react'
 import { InputAdornment, TextField } from '@mui/material';
 
 function PriceInput(props: {id: string, name: string, label: string, formik: any}) {
+
+
   return (
     <TextField
     sx={{marginTop: '10px'}}

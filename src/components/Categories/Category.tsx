@@ -27,6 +27,8 @@ function Category() {
   const dispatch = useAppDispatch();
   const checkboxOptionsNames = filterFEUtils.getCheckboxOptionsNames(options);
   const sliderOptionsNames = filterFEUtils.getSliderOptionsNames(options);
+
+  const filtersStatus = useAppSelector(state => state.filters.selectedOptions)
   
   useEffect(() => {
     // @ts-ignore
@@ -54,6 +56,8 @@ function Category() {
     ...initilalCheck,
     ...initialSlider,
   };
+
+
 
   return (
     <Container

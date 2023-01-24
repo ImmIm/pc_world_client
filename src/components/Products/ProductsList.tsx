@@ -1,4 +1,4 @@
-import { Container, Skeleton } from '@mui/material';
+import { Container, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '../../types/types';
@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/system';
 import dataUtils from '../../app/utils/dataUtils';
+import { dataActions, filtersActions } from '../../app/store';
 
 function ProductsList(props: { category: string }) {
   const [ref, inView, entry] = useInView({
@@ -18,51 +19,86 @@ function ProductsList(props: { category: string }) {
   const maxProducts = useAppSelector((state) => state.data.maxProducts);
   const productCategory = useAppSelector((state) => state.data.category);
   const status = useAppSelector((state) => state.data.status);
+  const filters = useAppSelector((state) => state.filters.selectedOptions);
+  const filtersStatus = useAppSelector((state) => state.filters.filtering);
+  const errorStatus = useAppSelector((state) => state.data.error);
 
-
-  console.log(status);
-  
+  console.log(errorStatus);
 
   useEffect(() => {
-    if (count < maxProducts) {
-      dispatch(
-        // @ts-ignore
-        dataUtils.getProductsByCategory({
-          category: props.category?.toLowerCase(),
-          count,
-        })
-      );
-    } else if (props.category.toLowerCase() !== productCategory) {
-      dispatch(
-        // @ts-ignore
-        dataUtils.getProductsByCategory({
-          category: props.category?.toLowerCase(),
-          count: 0,
-        })
-      );
-    }
-  }, [props.category, inView]);
+    console.log('Use effect');
 
-  
+    if (props.category !== productCategory) {
+      dispatch(dataActions.clearProducts());
+      dispatch(
+        dataUtils.getProductsByFilters({
+          category: props.category,
+          count: 0,
+          filters,
+        })
+      );
+    } else if (count < maxProducts) {
+      if (filtersStatus) {
+        dispatch(
+          dataUtils.getProductsByFilters({
+            category: props.category,
+            count: 0,
+            filters,
+          })
+        );
+      } else {
+        dispatch(
+          dataUtils.getProductsByFilters({
+            category: props.category,
+            count,
+            filters,
+          })
+        );
+      }
+    } else {
+      if (filtersStatus) {
+        dispatch(
+          dataUtils.getProductsByFilters({
+            category: props.category,
+            count: 0,
+            filters,
+          })
+        );
+      }
+    }
+  }, [filters, filtersStatus, inView]);
+
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      {status !== 'ok' && count === 0 ? (
-        <Skeleton sx={{ height: '100%', width: '100%' }} />
-      ) : (
-        <>
-          {products.map((el) => {
-            return (
-              <ProductCard key={el.id} product={el} category={props.category} />
-            );
-          })}
+      <>
+        {status !== 'ok' && count === 0 ? (
+          <>
+            {errorStatus === 'Not found' ? (
+              <Typography>Soory, our search not found that</Typography>
+            ) : (
+              <Skeleton sx={{ height: '100%', width: '100%' }} />
+            )}
+          </>
+        ) : (
+          <>
+            {products.map((el) => {
+              return (
+                <ProductCard
+                  key={el.id}
+                  product={el}
+                  category={props.category}
+                />
+              );
+            })}
+          </>
+        )}
 
-          {count < maxProducts ? (
-            <Box>
-              <CircularProgress ref={ref} />
-            </Box>
-          ) : null}
-        </>
-      )}
+        {count < maxProducts ? (
+          <Box>
+            <CircularProgress ref={ref} />
+          </Box>
+        ) : null}
+      </>
     </Container>
   );
 }

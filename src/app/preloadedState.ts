@@ -27,6 +27,7 @@ export const preloadedState = {
       categories: []
     },
     filters: {
+      filtering: false,
       selectedOptions: {},
       status: '',
       error: '',

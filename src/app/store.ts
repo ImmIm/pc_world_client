@@ -19,6 +19,7 @@ export const store = configureStore({
 export const authActions = authSlice.actions;
 export const uiActions = uiSlice.actions;
 export const filtersActions = filtersSlice.actions;
+export const dataActions = dataSlice.actions;
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<
